@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import travelRoutes from './routes/travel';
 import budgetRoutes from './routes/budget';
 import llmRoutes from './routes/llm';
+import speechRoutes from './routes/speech';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use('/api/travel', travelRoutes);
 app.use('/api/budget', budgetRoutes);
 app.use('/api/llm', llmRoutes);
+app.use('/api/speech', speechRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

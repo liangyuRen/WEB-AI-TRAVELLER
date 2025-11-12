@@ -9,6 +9,20 @@ const apiClient = axios.create({
   },
 });
 
+// Add interceptor to include API key from localStorage
+apiClient.interceptors.request.use((config) => {
+  const apiKeys = localStorage.getItem('apiKeys');
+  if (apiKeys) {
+    const keys = JSON.parse(apiKeys);
+    // Add API key to request if available
+    if (keys.llmApiKey && config.data) {
+      config.data.apiKey = keys.llmApiKey;
+      config.data.provider = keys.llmProvider || 'alibaba';
+    }
+  }
+  return config;
+});
+
 export const travelService = {
   generatePlan: async (destination: string, days: number, budget: number, people: number, preferences: string) => {
     return apiClient.post('/travel/plan', {
@@ -53,7 +67,7 @@ export const budgetService = {
 };
 
 export const llmService = {
-  chat: async (prompt: string, model = 'gpt-3.5-turbo') => {
+  chat: async (prompt: string, model = 'qwen-7b-chat') => {
     return apiClient.post('/llm/chat', { prompt, model });
   },
 
