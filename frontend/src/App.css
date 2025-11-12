@@ -1,38 +1,78 @@
-.App {
-  text-align: center;
+/* App specific styles - Golden Luxury Theme */
+
+/* Input field styles */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+  border: 2px solid #ffd480;
+  transition: all 0.3s ease;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+  border-color: #ffc857;
+  box-shadow: 0 0 0 3px rgba(255, 200, 87, 0.1);
+  background-color: #fffbf0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Range slider styling */
+input[type="range"] {
+  accent-color: #b8860b;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+/* Button hover effects */
+button:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-.App-link {
-  color: #61dafb;
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Label styling */
+label {
+  font-weight: 600;
+  color: #5c4033;
 }
+
+/* Card hover effects */
+.rounded-lg {
+  transition: all 0.3s ease;
+}
+
+.shadow-lg:hover {
+  box-shadow: 0 12px 32px rgba(255, 200, 87, 0.2);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fffbf0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ffc857;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #e6b000;
+}
+
