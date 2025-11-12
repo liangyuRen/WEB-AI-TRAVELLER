@@ -1,4 +1,5 @@
 import create from 'zustand';
+import { signIn, signUp, signOut, getCurrentUser, supabase } from '../services/supabase';
 
 interface User {
   id: string;
@@ -24,45 +25,86 @@ export const useAuthStore = create<AuthStore>((set) => ({
   login: async (email: string, password: string) => {
     set({ loading: true, error: null });
     try {
-      // TODO: Implement login with Supabase
-      // const { data, error } = await supabase.auth.signInWithPassword({
-      //   email,
-      //   password,
-      // });
-      // if (error) throw error;
-      set({ user: { id: '1', email, name: 'User' }, loading: false });
+      const { session } = await signIn(email, password);
+
+      if (session?.user) {
+        set({
+          user: {
+            id: session.user.id,
+            email: session.user.email || '',
+            name: (session.user.user_metadata?.display_name as string) || 'User',
+          },
+          loading: false,
+        });
+      }
     } catch (error: any) {
-      set({ error: error.message, loading: false });
+      set({ error: error.message || 'Login failed', loading: false });
+      throw error;
     }
   },
 
   signup: async (email: string, password: string, name: string) => {
     set({ loading: true, error: null });
     try {
-      // TODO: Implement signup with Supabase
-      set({ user: { id: '1', email, name }, loading: false });
+      const { user } = await signUp(email, password, name);
+
+      if (user) {
+        set({
+          user: {
+            id: user.id,
+            email: user.email || '',
+            name,
+          },
+          loading: false,
+        });
+      }
     } catch (error: any) {
-      set({ error: error.message, loading: false });
+      set({ error: error.message || 'Signup failed', loading: false });
+      throw error;
     }
   },
 
   logout: async () => {
     set({ loading: true });
     try {
-      // TODO: Implement logout with Supabase
-      set({ user: null, loading: false });
+      await signOut();
+      set({ user: null, loading: false, error: null });
     } catch (error: any) {
-      set({ error: error.message, loading: false });
+      set({ error: error.message || 'Logout failed', loading: false });
+      throw error;
     }
   },
 
   checkAuth: async () => {
     set({ loading: true });
     try {
-      // TODO: Check if user is already logged in
-      set({ loading: false });
+      const user = await getCurrentUser();
+
+      if (user) {
+        set({
+          user: {
+            id: user.id,
+            email: user.email || '',
+            name: (user.user_metadata?.display_name as string) || 'User',
+          },
+          loading: false,
+        });
+      } else {
+        set({ user: null, loading: false });
+      }
     } catch (error: any) {
       set({ error: error.message, loading: false });
     }
   },
 }));
+
+// Set up auth state listener
+supabase.auth.onAuthStateChange((event, session) => {
+  const store = useAuthStore.getState();
+
+  if (session?.user) {
+    store.checkAuth();
+  } else if (event === 'SIGNED_OUT') {
+    useAuthStore.setState({ user: null });
+  }
+});
