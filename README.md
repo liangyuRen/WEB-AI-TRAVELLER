@@ -90,31 +90,54 @@ ai-travel-planner/
 - 或 Node.js 18.x 及以上版本
 - Git
 
-### 方法一：Docker Compose 运行（推荐）
+### 方法1：使用预编译Docker镜像（最简单）
 
-#### 1.1 从 Release 页面下载 Docker 镜像文件
+#### 1.1 从 GitHub Release 下载镜像文件
 
+访问 GitHub Release 页面下载对应架构的镜像文件：
+
+**x86_64 架构（常见）**:
 ```bash
-# 在 GitHub Release 页面下载对应的 tar 文件
-# 针对 x86_64 机器
-docker load -i ai-travel-planner_v1.0.0_amd64.tar
-docker run -d --name ai-travel-planner -p 3000:3000 -p 5000:5000 \
-  ai-travel-planner:v1.0.0-amd64
+# 下载镜像文件
+wget https://github.com/liangyuRen/WEB-AI-TRAVELLER/releases/download/v1.0.0/ai-travel-backend_v1.0.0_amd64.tar.gz
+wget https://github.com/liangyuRen/WEB-AI-TRAVELLER/releases/download/v1.0.0/ai-travel-frontend_v1.0.0_amd64.tar.gz
 
-# 针对 ARM64 机器
-docker load -i ai-travel-planner_v1.0.0_arm64.tar
-docker run -d --name ai-travel-planner -p 3000:3000 -p 5000:5000 \
-  ai-travel-planner:v1.0.0-arm64
+# 加载镜像
+docker load -i ai-travel-backend_v1.0.0_amd64.tar.gz
+docker load -i ai-travel-frontend_v1.0.0_amd64.tar.gz
+
+# 运行容器
+docker run -d --name ai-travel-backend -p 5000:5000 ai-travel-backend:v1.0.0-amd64
+docker run -d --name ai-travel-frontend -p 3000:80 ai-travel-frontend:v1.0.0-amd64
+
+# 访问应用
+# 前端: http://localhost:3000
+# 后端API: http://localhost:5000
 ```
 
-#### 1.2 使用 Docker Compose 启动
+**ARM64 架构（苹果M系列、树莓派等）**:
+```bash
+# 下载镜像文件
+wget https://github.com/liangyuRen/WEB-AI-TRAVELLER/releases/download/v1.0.0/ai-travel-backend_v1.0.0_arm64.tar.gz
+wget https://github.com/liangyuRen/WEB-AI-TRAVELLER/releases/download/v1.0.0/ai-travel-frontend_v1.0.0_arm64.tar.gz
+
+# 加载镜像
+docker load -i ai-travel-backend_v1.0.0_arm64.tar.gz
+docker load -i ai-travel-frontend_v1.0.0_arm64.tar.gz
+
+# 运行容器
+docker run -d --name ai-travel-backend -p 5000:5000 ai-travel-backend:v1.0.0-arm64
+docker run -d --name ai-travel-frontend -p 3000:80 ai-travel-frontend:v1.0.0-arm64
+```
+
+#### 1.2 使用 Docker Compose 启动（更推荐）
 
 ```bash
 # 克隆仓库
 git clone https://github.com/liangyuRen/WEB-AI-TRAVELLER.git
 cd WEB-AI-TRAVELLER
 
-# 启动应用（自动构建镜像）
+# 启动应用（自动构建或拉取镜像）
 docker-compose up --build
 
 # 应用地址：
@@ -122,7 +145,7 @@ docker-compose up --build
 # 后端API: http://localhost:5000
 ```
 
-### 方法二：本地开发运行
+### 方法2：本地开发运行
 
 #### 2.1 克隆仓库
 ```bash
@@ -144,6 +167,24 @@ cd frontend
 npm install
 npm start
 # 前端运行在 http://localhost:3000
+```
+
+### 方法3：本地构建 Docker 镜像
+
+如果想自己构建 Docker 镜像：
+
+```bash
+# 克隆仓库
+git clone https://github.com/liangyuRen/WEB-AI-TRAVELLER.git
+cd WEB-AI-TRAVELLER
+
+# 构建镜像
+docker build -f Dockerfile.backend -t ai-travel-backend:v1.0.0 .
+docker build -f Dockerfile.frontend -t ai-travel-frontend:v1.0.0 .
+
+# 运行容器
+docker run -d --name ai-travel-backend -p 5000:5000 ai-travel-backend:v1.0.0
+docker run -d --name ai-travel-frontend -p 3000:80 ai-travel-frontend:v1.0.0
 ```
 
 ## ⚙️ 环境配置
